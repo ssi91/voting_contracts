@@ -27,8 +27,8 @@ contract Voting {
     event VoterSet(address indexed voter);
     event Voted(address indexed voter);
 
-    constructor(address _chairman, uint32 _deadline, bytes32[] titles) {
-        require(address(0) == _chairman, "Chairman's address is mandatory");
+    constructor(address _chairman, uint32 _deadline, bytes32[] memory titles) {
+        require(address(0) != _chairman, "Chairman's address is mandatory");
         require(_deadline > block.timestamp, "Deadline must be later then now");
         chairman = _chairman;
         deadline = _deadline;
@@ -62,7 +62,7 @@ contract Voting {
         emit Voted(msg.sender);
     }
 
-    function winnerProposal() external view returns (uint, Proposal) {
+    function winnerProposal() external view returns (uint, Proposal memory) {
         require(block.timestamp > deadline, "Voting is still active");
 
         uint256 winnerIndex = 0;
@@ -71,10 +71,10 @@ contract Voting {
                 winnerIndex = i;
             }
         }
-        return (i, proposal[i]);
+        return (winnerIndex, proposals[winnerIndex]);
     }
 
-    function getProposal(uint256 i) external view returns(Proposal) {
+    function getProposal(uint256 i) external view returns (Proposal memory) {
         require(i <= proposals.length, "Invalid index");
         return proposals[i];
     }
