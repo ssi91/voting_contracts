@@ -61,4 +61,21 @@ contract Voting {
 
         emit Voted(msg.sender);
     }
+
+    function winnerProposal() external view returns (uint, Proposal) {
+        require(block.timestamp > deadline, "Voting is still active");
+
+        uint256 winnerIndex = 0;
+        for (uint256 i = 1; i < proposals.length; i++) {
+            if (proposals[i].count > proposals[winnerIndex].count) {
+                winnerIndex = i;
+            }
+        }
+        return (i, proposal[i]);
+    }
+
+    function getProposal(uint256 i) external view returns(Proposal) {
+        require(i <= proposals.length, "Invalid index");
+        return proposals[i];
+    }
 }
