@@ -39,7 +39,7 @@ contract Voting {
     }
 
     function allowToVote(address voterAddress) external onlyChairman {
-        require(address(0) == voterAddress, "Address of voter mustn't be zero");
+        require(address(0) != voterAddress, "Address of voter mustn't be zero");
 
         Voter storage voter = voters[voterAddress];
         require(!voter.isAllowed, "Voter's been already set");
@@ -49,7 +49,7 @@ contract Voting {
     }
 
     function vote(uint256 proposalIndex) external {
-        require(block.timestamp < deadline, "Voting's not been started yet");
+        require(block.timestamp < deadline, "Voting's been finished");
         Voter storage voter = voters[msg.sender];
         require(voter.isAllowed && !voter.voted, "Not allowed to vote to the voter");
 
