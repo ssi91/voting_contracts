@@ -11,7 +11,7 @@ contract VotingFactory {
     constructor() {
     }
 
-    function createVoting(uint256 deadline, bytes32[] memory titles) external returns (Voting) {
+    function createVoting(uint32 deadline, bytes32[] memory titles) external returns (Voting) {
         Voting instance = new Voting(msg.sender, deadline, titles);
         votings[msg.sender].push(instance);
         emit VotingInstanceCreated(address(instance), msg.sender);
