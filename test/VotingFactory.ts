@@ -2,7 +2,6 @@ import {ethers} from "hardhat";
 import {time} from "@nomicfoundation/hardhat-network-helpers";
 import {VotingFactory} from "../typechain-types";
 import {encodeBytes32String} from "ethers";
-import {seconds} from "@nomicfoundation/hardhat-network-helpers/dist/src/helpers/time/duration";
 import {expect} from "chai";
 import {HardhatEthersSigner} from "@nomicfoundation/hardhat-ethers/signers";
 

@@ -8,9 +8,6 @@ contract VotingFactory {
 
     mapping(address => Voting[]) public votings;
 
-    constructor() {
-    }
-
     function createVoting(uint32 deadline, bytes32[] memory titles) external returns (Voting) {
         Voting instance = new Voting(msg.sender, deadline, titles);
         votings[msg.sender].push(instance);
