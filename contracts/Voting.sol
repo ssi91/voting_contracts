@@ -43,8 +43,10 @@ contract Voting {
         chairman = _chairman;
         deadline = _deadline;
 
-        for (uint256 i = 0; i < titles.length; i++) {
-            proposals.push(Proposal(titles[i], 0));
+        unchecked {
+            for (uint256 i = 0; i < titles.length; i++) {
+                proposals.push(Proposal(titles[i], 0));
+            }
         }
     }
 
