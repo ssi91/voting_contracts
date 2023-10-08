@@ -78,8 +78,11 @@ contract Voting {
         emit Voted(msg.sender);
     }
 
+    // TODO: write tests for this function
     function winnerProposal() external view returns (uint, Proposal memory) {
-        require(block.timestamp > deadline, "Voting is still active");
+        if (block.timestamp <= deadline) {
+            revert WrongTime(block.timestamp, deadline);
+        }
 
         uint256 winnerIndex = 0;
         for (uint256 i = 1; i < proposals.length; i++) {
