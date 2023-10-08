@@ -93,8 +93,11 @@ contract Voting {
         return (winnerIndex, proposals[winnerIndex]);
     }
 
+    // TODO: write tests for this function
     function getProposal(uint256 i) external view returns (Proposal memory) {
-        require(i <= proposals.length, "Invalid index");
+        if (i > proposals.length) {
+            revert InvalidProposal(i, proposals.length);
+        }
         return proposals[i];
     }
 }
