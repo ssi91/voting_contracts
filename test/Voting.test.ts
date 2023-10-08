@@ -33,7 +33,10 @@ describe("Voting", function () {
     });
 
     it("Should not allow to vote", async () => {
-        await expect(voting.connect(accounts[1]).vote(0)).to.be.revertedWith("Not allowed to vote to the voter");
+        await expect(voting.connect(accounts[1]).vote(0)).to.be.revertedWithCustomError(
+            voting,
+            "InvalidVoter"
+        );
     });
 
     it("Should not let to set a voter", async () => {
@@ -46,7 +49,7 @@ describe("Voting", function () {
     it("Should not let to set a zero-address voter", async () => {
         await expect(voting.allowToVote("0x0000000000000000000000000000000000000000")).to.be.revertedWithCustomError(
             voting,
-            "InvalidAddress"
+            "InvalidVoter"
         );
     });
 
@@ -54,7 +57,7 @@ describe("Voting", function () {
         await voting.allowToVote(accounts[1].address);
         await expect(voting.allowToVote(accounts[1].address)).to.be.revertedWithCustomError(
             voting,
-            "InvalidAddress"
+            "InvalidVoter"
         );
     });
 
@@ -63,7 +66,9 @@ describe("Voting", function () {
 
         await time.increaseTo(deadline + 10);
 
-        await expect(voting.connect(accounts[1]).vote(0)).to.be.revertedWith("Voting's been finished");
-
+        await expect(voting.connect(accounts[1]).vote(0)).to.be.revertedWithCustomError(
+            voting,
+            "WrongTime"
+        );
     });
 });

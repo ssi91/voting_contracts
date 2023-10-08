@@ -3,7 +3,11 @@ pragma solidity ^0.8.0;
 
 error Unauthorized(address accessor, address chairman);
 
-error InvalidAddress(address voterAddress);
+error InvalidVoter(address voterAddress);
+
+error InvalidProposal(uint256 proposalIndex, uint256 maxProposals);
+
+error WrongTime(uint256 currentTime, uint256 deadline);
 
 contract Voting {
     modifier onlyChairman() {
@@ -47,7 +51,7 @@ contract Voting {
     function allowToVote(address voterAddress) external onlyChairman {
         Voter storage voter = voters[voterAddress];
         if (address(0) == voterAddress || voter.isAllowed) {
-            revert InvalidAddress(voterAddress);
+            revert InvalidVoter(voterAddress);
         }
 
         voter.isAllowed = true;
@@ -55,11 +59,17 @@ contract Voting {
     }
 
     function vote(uint256 proposalIndex) external {
-        require(block.timestamp < deadline, "Voting's been finished");
+        if (block.timestamp >= deadline) {
+            revert WrongTime(block.timestamp, deadline);
+        }
         Voter storage voter = voters[msg.sender];
-        require(voter.isAllowed && !voter.voted, "Not allowed to vote to the voter");
+        if (!voter.isAllowed || voter.voted) {
+            revert InvalidVoter(msg.sender);
+        }
 
-        require(proposalIndex < proposals.length, "Wrong proposal");
+        if (proposalIndex >= proposals.length) {
+            revert InvalidProposal(proposalIndex, proposals.length);
+        }
         Proposal storage prop = proposals[proposalIndex];
 
         prop.count++;
