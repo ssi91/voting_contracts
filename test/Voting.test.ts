@@ -37,16 +37,25 @@ describe("Voting", function () {
     });
 
     it("Should not let to set a voter", async () => {
-        await expect(voting.connect(accounts[1]).allowToVote(accounts[1].address)).to.be.revertedWith("It's only allowed to the Chairman");
+        await expect(voting.connect(accounts[1]).allowToVote(accounts[1].address)).to.be.revertedWithCustomError(
+            voting,
+            "Unauthorized"
+        );
     });
 
     it("Should not let to set a zero-address voter", async () => {
-        await expect(voting.allowToVote("0x0000000000000000000000000000000000000000")).to.be.revertedWith("Address of voter mustn't be zero");
+        await expect(voting.allowToVote("0x0000000000000000000000000000000000000000")).to.be.revertedWithCustomError(
+            voting,
+            "InvalidAddress"
+        );
     });
 
     it("Should not let to set a voter twice", async () => {
         await voting.allowToVote(accounts[1].address);
-        await expect(voting.allowToVote(accounts[1].address)).to.be.revertedWith("Voter's been already set");
+        await expect(voting.allowToVote(accounts[1].address)).to.be.revertedWithCustomError(
+            voting,
+            "InvalidAddress"
+        );
     });
 
     it("Should revert due to Voting was finished", async () => {

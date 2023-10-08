@@ -1,9 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
+error Unauthorized(address accessor, address chairman);
+
+error InvalidAddress(address voterAddress);
+
 contract Voting {
     modifier onlyChairman() {
-        require(msg.sender == chairman, "It's only allowed to the Chairman");
+        if (msg.sender != chairman) {
+            revert Unauthorized(msg.sender, chairman);
+        }
         _;
     }
 
@@ -39,10 +45,10 @@ contract Voting {
     }
 
     function allowToVote(address voterAddress) external onlyChairman {
-        require(address(0) != voterAddress, "Address of voter mustn't be zero");
-
         Voter storage voter = voters[voterAddress];
-        require(!voter.isAllowed, "Voter's been already set");
+        if (address(0) == voterAddress || voter.isAllowed) {
+            revert InvalidAddress(voterAddress);
+        }
 
         voter.isAllowed = true;
         emit VoterSet(voterAddress);
